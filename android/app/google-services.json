@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "598132888655",
+    "project_id": "projeto-firebase-istec",
+    "storage_bucket": "projeto-firebase-istec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598132888655:android:241d1da9c0f000e23b863a",
+        "android_client_info": {
+          "package_name": "com.reactfinalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598132888655-h376n7ueqbk6ivf9ba93peopn15qagrm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr70PRsQjnQWa4Dbn9ILwzSGs1WbeYDTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598132888655-h376n7ueqbk6ivf9ba93peopn15qagrm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,6 +17,7 @@ const Register = () => {
   const [email, setemail] = useState('');
   const [pass, setpass] = useState('');
   const [nome, setnome] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const nav = useNavigation();
 
@@ -27,6 +28,7 @@ const Register = () => {
         firestore().collection('users').doc(auth().currentUser.uid).set({
           nome: nome,
           email: email,
+          admin: isAdmin,
         });
       })
 

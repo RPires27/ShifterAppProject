@@ -17,43 +17,52 @@ const Login = () => {
   const [pass, setpass] = useState('');
 
   const HandleLogin = () => {
-    auth()
-      .signInWithEmailAndPassword(email, pass)
-      .then(() => {
-        Toast.show({
-          type: 'success',
-          text1: 'Entrou com sucesso!',
-          position: 'bottom',
+    if (email && pass) {
+      auth()
+        .signInWithEmailAndPassword(email, pass)
+        .then(() => {
+          Toast.show({
+            type: 'success',
+            text1: 'Entrou com sucesso!',
+            position: 'bottom',
+          });
+        })
+        .catch(error => {
+          if (error.code === 'auth/invalid-email') {
+            Toast.show({
+              type: 'error',
+              text1: 'Email Inválido',
+              text2: 'Verifica se digitaste bem o email!',
+              position: 'bottom',
+            });
+          }
+
+          if (error.code === 'auth/wrong-password') {
+            Toast.show({
+              type: 'error',
+              text1: 'Password Errada',
+              text2: 'Verifica se digitaste bem a password!',
+              position: 'bottom',
+            });
+          }
+
+          if (error.code === 'auth/user-not-found') {
+            Toast.show({
+              type: 'error',
+              text1: 'Utilizador não encontrado',
+              text2: 'Este utilizador não existe',
+              position: 'bottom',
+            });
+          }
         });
-      })
-      .catch(error => {
-        if (error.code === 'auth/invalid-email') {
-          Toast.show({
-            type: 'error',
-            text1: 'Email Inválido',
-            text2: 'Verifica se digitaste bem o email!',
-            position: 'bottom',
-          });
-        }
-
-        if (error.code === 'auth/wrong-password') {
-          Toast.show({
-            type: 'error',
-            text1: 'Password Errada',
-            text2: 'Verifica se digitaste bem a password!',
-            position: 'bottom',
-          });
-        }
-
-        if (error.code === 'auth/user-not-found') {
-          Toast.show({
-            type: 'error',
-            text1: 'Utilizador não encontrado',
-            text2: 'Este utilizador não existe',
-            position: 'bottom',
-          });
-        }
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Sem dados',
+        text2: 'Certifica-te que colocaste dados em todos os campos',
+        position: 'bottom',
       });
+    }
   };
 
   const nav = useNavigation();

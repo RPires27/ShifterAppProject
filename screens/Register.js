@@ -22,44 +22,53 @@ const Register = () => {
   const nav = useNavigation();
 
   const HandleRegister = () => {
-    auth()
-      .createUserWithEmailAndPassword(email, pass)
-      .then(() => {
-        firestore().collection('users').doc(auth().currentUser.uid).set({
-          nome: nome,
-          email: email,
-          admin: isAdmin,
+    if (email && pass && nome) {
+      auth()
+        .createUserWithEmailAndPassword(email, pass)
+        .then(() => {
+          firestore().collection('users').doc(auth().currentUser.uid).set({
+            nome: nome,
+            email: email,
+            admin: isAdmin,
+          });
+        })
+
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            Toast.show({
+              type: 'error',
+              text1: 'Email já em uso',
+              text2: 'Este email ja está registado',
+              position: 'bottom',
+            });
+          }
+
+          if (error.code === 'auth/invalid-email') {
+            Toast.show({
+              type: 'error',
+              text1: 'Email Inválido',
+              text2: 'Esse email não é válido',
+              position: 'bottom',
+            });
+          }
+
+          if (error.code === 'auth/weak-password') {
+            Toast.show({
+              type: 'error',
+              text1: 'Password fraca',
+              text2: 'Usa uma password mais segura',
+              position: 'bottom',
+            });
+          }
         });
-      })
-
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          Toast.show({
-            type: 'error',
-            text1: 'Email já em uso',
-            text2: 'Este email ja está registado',
-            position: 'bottom',
-          });
-        }
-
-        if (error.code === 'auth/invalid-email') {
-          Toast.show({
-            type: 'error',
-            text1: 'Email Inválido',
-            text2: 'Esse email não é válido',
-            position: 'bottom',
-          });
-        }
-
-        if (error.code === 'auth/weak-password') {
-          Toast.show({
-            type: 'error',
-            text1: 'Password fraca',
-            text2: 'Usa uma password mais segura',
-            position: 'bottom',
-          });
-        }
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Sem dados',
+        text2: 'Certifica-te que colocaste dados em todos os campos',
+        position: 'bottom',
       });
+    }
   };
 
   return (

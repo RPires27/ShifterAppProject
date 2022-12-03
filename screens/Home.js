@@ -46,5 +46,8 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'Quicksand-Bold',
     fontSize: 30,
+    position: 'absolute',
+    top: 50,
+    left: 25,
   },
 });

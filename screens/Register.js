@@ -12,17 +12,23 @@ import firestore from '@react-native-firebase/firestore';
 import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const Register = () => {
   const [email, setemail] = useState('');
   const [pass, setpass] = useState('');
   const [nome, setnome] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setisAdmin] = useState(null);
+  const [isOpen, setisOpen] = useState(false);
+  const [roles, setroles] = useState([
+    {label: 'Admin', value: true},
+    {label: 'Trabalhador', value: false},
+  ]);
 
   const nav = useNavigation();
 
   const HandleRegister = () => {
-    if (email && pass && nome) {
+    if (email && pass && nome && isAdmin !== null) {
       auth()
         .createUserWithEmailAndPassword(email, pass)
         .then(() => {
@@ -79,7 +85,9 @@ const Register = () => {
         onPress={() => {
           nav.navigate('Login');
         }}></Icon>
+
       <Text style={styles.title}>Criar Conta</Text>
+
       <View style={styles.boxView}>
         <TextInput
           value={nome}
@@ -87,6 +95,7 @@ const Register = () => {
           placeholder="Nome"
           style={styles.textinput}></TextInput>
       </View>
+
       <View style={styles.boxView}>
         <TextInput
           value={email}
@@ -105,6 +114,36 @@ const Register = () => {
           secureTextEntry
           style={styles.textinput}></TextInput>
       </View>
+
+      <DropDownPicker
+        open={isOpen}
+        value={isAdmin}
+        items={roles}
+        setOpen={setisOpen}
+        setValue={setisAdmin}
+        setItems={setroles}
+        placeholder="Selecione o seu papel"
+        style={styles.boxView}
+        labelStyle={{
+          fontFamily: 'Quicksand-Bold',
+          fontSize: 20,
+          color: 'white',
+        }}
+        placeholderStyle={{
+          fontSize: 20,
+          fontFamily: 'Quicksand-Regular',
+          color: '#F4DFBA',
+        }}
+        dropDownContainerStyle={styles.dropDownContainerStyle}
+        listItemLabelStyle={{
+          fontFamily: 'Quicksand-Regular',
+          color: '#F4DFBA',
+        }}
+        selectedItemLabelStyle={{
+          fontFamily: 'Quicksand-Bold',
+          color: '#F4DFBA',
+        }}
+      />
 
       <TouchableOpacity onPress={HandleRegister} style={styles.loginBtt}>
         <Text style={styles.logintxt}>Criar conta</Text>
@@ -133,8 +172,21 @@ const styles = StyleSheet.create({
   boxView: {
     justifyContent: 'center',
     backgroundColor: '#CA965C',
+    alignSelf: 'center',
     width: '80%',
     height: 75,
+    borderRadius: 20,
+    borderColor: '#876445',
+    borderWidth: 5,
+    marginTop: 10,
+  },
+
+  dropDownContainerStyle: {
+    justifyContent: 'center',
+    backgroundColor: '#CA965C',
+    alignSelf: 'center',
+    width: '80%',
+    height: 90,
     borderRadius: 20,
     borderColor: '#876445',
     borderWidth: 5,

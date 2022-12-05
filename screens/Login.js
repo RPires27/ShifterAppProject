@@ -20,13 +20,7 @@ const Login = () => {
     if (email && pass) {
       auth()
         .signInWithEmailAndPassword(email, pass)
-        .then(() => {
-          Toast.show({
-            type: 'success',
-            text1: 'Entrou com sucesso!',
-            position: 'bottom',
-          });
-        })
+        .then(() => {})
         .catch(error => {
           if (error.code === 'auth/invalid-email') {
             Toast.show({

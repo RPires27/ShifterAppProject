@@ -4,32 +4,42 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 const Home = () => {
-  const [nome, setnome] = useState('');
-
-  const SignOut = () => {
-    auth()
-      .signOut()
-      .then(() => console.log('User signed out!'));
-  };
+  const [user, setUser] = useState();
 
   useEffect(() => {
-    firestore()
+    const subscriber = firestore()
       .collection('users')
-      .doc(auth().currentUser.uid)
-      .get()
-      .then(snapshot => {
-        if (snapshot.exists) {
-          setnome(snapshot.data());
-        }
+      .where('email', '==', auth().currentUser.email)
+      .onSnapshot(querySnapshot => {
+        const users = querySnapshot.docs.map(doc => doc.data());
+        setUser(users[0]);
       });
-  });
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Olá {nome.nome}!</Text>
-      <Button onPress={SignOut} title="signout"></Button>
-    </View>
-  );
+    // Unsubscribe from events when no longer in use
+    return () => subscriber();
+  }, []);
+
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.loading}>A carregar...</Text>
+      </View>
+    );
+  }
+
+  if (user.admin === true) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>Olá {user.nome}! És admin</Text>
+      </View>
+    );
+  } else if (user.admin === false) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>Olá {user.nome}! És trabalhador</Text>
+      </View>
+    );
+  }
 };
 
 export default Home;
@@ -47,7 +57,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Bold',
     fontSize: 30,
     position: 'absolute',
-    top: 50,
+    top: 25,
     left: 25,
+  },
+
+  loading: {
+    color: 'black',
+    fontFamily: 'Quicksand-Bold',
+    fontSize: 30,
   },
 });

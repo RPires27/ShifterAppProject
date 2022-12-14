@@ -1,60 +1,49 @@
-import {Button, FlatList, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import TaskModal from '../components/TaskModal';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 const Home = () => {
-  const [user, setUser] = useState(); //User logado
   const [todos, settodos] = useState([]); //Outros users
-  const [isModalOpen, setisModalOpen] = useState(false);
-  const [date, setDate] = useState('');
+  const nav = useNavigation();
 
-  // Buscar user logado
-  useEffect(() => {
-    firestore()
-      .collection('users')
-      .doc(auth().currentUser.uid)
-      .get()
-      .then(user => setUser(user.data()));
-  }, []);
+  const curUser = useSelector(state => state.currentUser);
 
   // Buscar trabalhadores/admins
   useEffect(() => {
-    if (user) {
-      firestore()
-        .collection('users')
-        .where('admin', '==', user?.admin === false ? true : false)
-        .onSnapshot(users => {
-          if (!users.empty) {
-            const USERS = [];
-            users.forEach(user => {
-              USERS.push(user.data());
-            });
+    firestore()
+      .collection('users')
+      .where('admin', '==', curUser.role === false ? true : false)
+      .onSnapshot(users => {
+        if (!users.empty) {
+          const USERS = [];
+          users.forEach(user => {
+            USERS.push(user.data());
+          });
 
-            settodos(USERS);
-          }
-        });
-    }
-  }, [user]);
+          settodos(USERS);
+        }
+      });
+  }, [curUser]);
 
-  const AbrirModal = () => {
-    setisModalOpen(true);
-  };
-
-  if (!user) {
+  if (curUser.role === true) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.loading}>A carregar...</Text>
-      </View>
-    );
-  }
+      <SafeAreaView style={styles.container}>
+        <View>
+          <Text style={styles.title}>Olá {curUser.name}!</Text>
+          <Text style={styles.subtitle}>Lista de trabalhadores:</Text>
+        </View>
 
-  if (user.admin === true) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>Olá {user.nome}! És admin</Text>
-        <View style={{alignItems: 'center'}}>
+        <View style={{marginLeft: 20}}>
           <FlatList
             data={todos}
             renderItem={({item}) => (
@@ -64,28 +53,36 @@ const Home = () => {
             )}
             keyExtractor={(item, index) => index.toString()}
           />
-          <TaskModal
-            modalVisible={isModalOpen}
-            setmodalVisible={setisModalOpen}></TaskModal>
-          <Button title="ohh" onPress={AbrirModal}></Button>
         </View>
-      </View>
-    );
-  } else if (user.admin === false) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>Olá {user.nome}! És trabalhador</Text>
 
-        <View style={{alignItems: 'center'}}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            nav.navigate('AddTask');
+          }}>
+          <Icon name="plus" size={60} color={'white'}></Icon>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  } else if (curUser.role === false) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View>
+          <Text style={styles.title}>Olá {curUser.name}!</Text>
+          <Text style={styles.subtitle}>Lista de admins:</Text>
+        </View>
+        <View style={{marginLeft: 20}}>
           <FlatList
             data={todos}
             renderItem={({item}) => (
-              <Text style={styles.lista}>{item.nome}</Text>
+              <View>
+                <Text style={styles.lista}>{item.nome}</Text>
+              </View>
             )}
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 };
@@ -95,18 +92,21 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-
     backgroundColor: '#EEC373',
   },
 
-  text: {
+  title: {
     color: 'black',
     fontFamily: 'Quicksand-Bold',
     fontSize: 30,
-    position: 'absolute',
-    top: 25,
-    left: 25,
+    margin: 20,
+  },
+  subtitle: {
+    color: 'black',
+    fontFamily: 'Quicksand-Medium',
+    fontSize: 30,
+    marginLeft: 20,
+    marginBottom: 20,
   },
 
   loading: {
@@ -119,5 +119,17 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'Quicksand-Regular',
     fontSize: 30,
+  },
+
+  button: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#876445',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 30,
+    bottom: 120,
   },
 });

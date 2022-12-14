@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Linking} from 'react-native';
+import {StyleSheet, Text, View, Linking, SafeAreaView} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
@@ -6,7 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 const Sobre = () => {
   const nav = useNavigation();
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.defTxt}>Sobre</Text>
 
       <Icon
@@ -28,7 +28,7 @@ const Sobre = () => {
         onPress={() => {
           Linking.openURL('https://github.com/RPires27/ShifterAppProject');
         }}></Icon>
-    </View>
+    </SafeAreaView>
   );
 };
 

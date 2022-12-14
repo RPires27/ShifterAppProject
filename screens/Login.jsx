@@ -11,16 +11,27 @@ import React, {useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import {useDispatch} from 'react-redux';
+import {addUser} from '../reducers/userSlice';
 
 const Login = () => {
   const [email, setemail] = useState('');
   const [pass, setpass] = useState('');
 
+  const dispatch = useDispatch();
+
+  const saveUser = user => {
+    const {email, uid, displayName} = user;
+    dispatch(addUser({uid, email, displayName, role: false}));
+  };
+
   const HandleLogin = () => {
     if (email && pass) {
       auth()
         .signInWithEmailAndPassword(email, pass)
-        .then(() => {})
+        .then(user => {
+          saveUser(user.user);
+        })
         .catch(error => {
           if (error.code === 'auth/invalid-email') {
             Toast.show({

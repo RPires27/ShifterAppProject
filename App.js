@@ -7,30 +7,57 @@ import Register from './screens/Register';
 import Toast from 'react-native-toast-message';
 import BottomTabNavigator from './navigator/BottomTabNavigator';
 import Sobre from './screens/Sobre';
+import AddTask from './screens/AddTask';
+import firestore from '@react-native-firebase/firestore';
 
-function App() {
+import store from './store';
+
+import {Provider, useDispatch} from 'react-redux';
+import {addUser} from './reducers/userSlice';
+
+const AppWrapper = () => {
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
+};
+
+const App = () => {
   const Stack = createNativeStackNavigator();
 
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
+  const [logado, setlogado] = useState();
+  const dispatch = useDispatch();
 
-  // Handle user state changes
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  }
+  const saveUser = user => {
+    const {admin, email, nome} = user;
+    dispatch(addUser({email, name: nome, role: admin}));
+  };
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
+    const unsubscribe = auth().onAuthStateChanged(user => {
+      if (user) {
+        firestore()
+          .collection('users')
+          .doc(auth().currentUser.uid)
+          .get()
+          .then(user => {
+            saveUser(user.data());
+          });
 
-  if (initializing) return null;
+        setlogado(true);
+      } else {
+        setlogado(false);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {user ? (
+        {logado ? (
           <>
             <Stack.Screen
               name="Tabs"
@@ -39,6 +66,10 @@ function App() {
             <Stack.Screen
               name="Sobre"
               component={Sobre}
+              options={{headerShown: false}}></Stack.Screen>
+            <Stack.Screen
+              name="AddTask"
+              component={AddTask}
               options={{headerShown: false}}></Stack.Screen>
           </>
         ) : (
@@ -59,6 +90,6 @@ function App() {
       <Toast></Toast>
     </NavigationContainer>
   );
-}
+};
 
-export default App;
+export default AppWrapper;

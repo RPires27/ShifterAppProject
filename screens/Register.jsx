@@ -13,17 +13,22 @@ import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {useDispatch} from 'react-redux';
+import {addUser, clearUser} from '../reducers/userSlice';
 
 const Register = () => {
   const [email, setemail] = useState('');
   const [pass, setpass] = useState('');
   const [nome, setnome] = useState('');
+  const [id, setid] = useState('');
   const [isAdmin, setisAdmin] = useState(null);
   const [isOpen, setisOpen] = useState(false);
   const [roles, setroles] = useState([
     {label: 'Admin', value: true},
     {label: 'Trabalhador', value: false},
   ]);
+
+  const dispatch = useDispatch();
 
   const nav = useNavigation();
 

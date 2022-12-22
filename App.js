@@ -14,6 +14,7 @@ import store from './store';
 
 import {Provider, useDispatch} from 'react-redux';
 import {addUser} from './reducers/userSlice';
+import UserProfile from './screens/UserProfile';
 
 const AppWrapper = () => {
   return (
@@ -30,8 +31,8 @@ const App = () => {
   const dispatch = useDispatch();
 
   const saveUser = user => {
-    const {admin, email, nome} = user;
-    dispatch(addUser({email, name: nome, role: admin}));
+    const {id, admin, email, nome} = user;
+    dispatch(addUser({id, email, name: nome, role: admin}));
   };
 
   useEffect(() => {
@@ -70,6 +71,10 @@ const App = () => {
             <Stack.Screen
               name="AddTask"
               component={AddTask}
+              options={{headerShown: false}}></Stack.Screen>
+            <Stack.Screen
+              name="UserProfile"
+              component={UserProfile}
               options={{headerShown: false}}></Stack.Screen>
           </>
         ) : (

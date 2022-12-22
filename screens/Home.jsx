@@ -8,15 +8,14 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {addUsersList, clearUsers} from '../reducers/usersListSlice';
 
-const Home = () => {
-  const [todos, settodos] = useState([]); //Outros users
-  const nav = useNavigation();
+const Home = ({navigation}) => {
+  const dispatch = useDispatch();
 
   const curUser = useSelector(state => state.currentUser);
+  const allUser = useSelector(state => state.allUsersList.users);
 
   // Buscar trabalhadores/admins
   useEffect(() => {
@@ -25,15 +24,27 @@ const Home = () => {
       .where('admin', '==', curUser.role === false ? true : false)
       .onSnapshot(users => {
         if (!users.empty) {
-          const USERS = [];
+          dispatch(clearUsers());
           users.forEach(user => {
-            USERS.push(user.data());
+            dispatch(addUsersList(user.data()));
           });
-
-          settodos(USERS);
         }
       });
   }, [curUser]);
+
+  if (curUser.role === null) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#EEC373',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text style={styles.title}>A carregar...</Text>
+      </View>
+    );
+  }
 
   if (curUser.role === true) {
     return (
@@ -43,25 +54,26 @@ const Home = () => {
           <Text style={styles.subtitle}>Lista de trabalhadores:</Text>
         </View>
 
-        <View style={{marginLeft: 20}}>
+        <View style={{marginLeft: 20, marginRight: 20}}>
           <FlatList
-            data={todos}
+            data={allUser}
             renderItem={({item}) => (
-              <View>
-                <Text style={styles.lista}>{item.nome}</Text>
+              <View style={styles.namesContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('UserProfile', {
+                      id: item.id,
+                      nome: item.nome,
+                      email: item.email,
+                    });
+                  }}>
+                  <Text style={styles.lista}>{item.nome}</Text>
+                </TouchableOpacity>
               </View>
             )}
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            nav.navigate('AddTask');
-          }}>
-          <Icon name="plus" size={60} color={'white'}></Icon>
-        </TouchableOpacity>
       </SafeAreaView>
     );
   } else if (curUser.role === false) {
@@ -73,7 +85,8 @@ const Home = () => {
         </View>
         <View style={{marginLeft: 20}}>
           <FlatList
-            data={todos}
+            data={allUser}
+            nestedScrollEnabled
             renderItem={({item}) => (
               <View>
                 <Text style={styles.lista}>{item.nome}</Text>
@@ -119,17 +132,13 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'Quicksand-Regular',
     fontSize: 30,
+    padding: 3,
   },
 
-  button: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#876445',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    right: 30,
-    bottom: 120,
+  namesContainer: {
+    borderWidth: 3,
+    marginTop: 20,
+    borderRadius: 10,
+    borderColor: '#876445',
   },
 });

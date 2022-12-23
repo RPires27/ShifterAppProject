@@ -1,16 +1,41 @@
 import {
+  FlatList,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TaskCard from '../components/TaskCard';
+import firestore from '@react-native-firebase/firestore';
 
 const UserProfile = ({route, navigation}) => {
   const {nome, id, email} = route.params;
+
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('users')
+      .doc(id)
+      .collection('tasks')
+      .onSnapshot(querySnapshot => {
+        const tasks = [];
+        querySnapshot.forEach(documentSnapshot => {
+          tasks.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+        setTasks(tasks);
+      });
+
+    return () => subscriber();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{flexDirection: 'row'}}>
@@ -31,9 +56,12 @@ const UserProfile = ({route, navigation}) => {
         <Text style={styles.txt}>ID : {id}</Text>
       </View>
 
-      <View>
-        <TaskCard></TaskCard>
-      </View>
+      <FlatList
+        data={tasks}
+        renderItem={({item}) => (
+          <TaskCard title={item.key} done={item.isDone} />
+        )}
+      />
 
       <TouchableOpacity
         style={styles.addButton}
@@ -60,6 +88,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EEC373',
+    justifyContent: 'space-between',
   },
   title: {
     color: 'black',
@@ -80,8 +109,8 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
+    width: '50%',
+    margin: 20,
+    alignSelf: 'flex-end',
   },
 });

@@ -10,6 +10,8 @@ import Sobre from './screens/Sobre';
 import AddTask from './screens/AddTask';
 import firestore from '@react-native-firebase/firestore';
 
+import TaskDetails from './screens/TaskDetails';
+
 import store from './store';
 
 import {Provider, useDispatch} from 'react-redux';
@@ -75,6 +77,10 @@ const App = () => {
             <Stack.Screen
               name="UserProfile"
               component={UserProfile}
+              options={{headerShown: false}}></Stack.Screen>
+            <Stack.Screen
+              name="TaskDetails"
+              component={TaskDetails}
               options={{headerShown: false}}></Stack.Screen>
           </>
         ) : (

@@ -1,7 +1,6 @@
 import {
   FlatList,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -59,7 +58,13 @@ const UserProfile = ({route, navigation}) => {
       <FlatList
         data={tasks}
         renderItem={({item}) => (
-          <TaskCard title={item.key} done={item.isDone} />
+          <TaskCard
+            title={item.key}
+            done={item.isDone}
+            data={item.tempo.toDate().toLocaleString('pt-PT')}
+            descricao={item.descricao}
+            id={id}
+          />
         )}
       />
 

@@ -1,6 +1,7 @@
 import {
   Button,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -38,67 +39,69 @@ const TaskDetails = ({route}) => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flexDirection: 'row'}}>
-        <Text style={styles.title}>Tarefa</Text>
-        <Icon
-          name="arrow-left-circle"
-          size={40}
-          color={'black'}
-          style={{alignSelf: 'center', position: 'absolute', right: 20}}
-          onPress={() => {
-            nav.goBack();
-          }}></Icon>
-      </View>
-
-      <View style={{margin: 20}}>
-        <Text style={styles.subtitle}>Titulo:</Text>
-        <Text style={styles.txt}>{title}</Text>
-      </View>
-
-      <View style={{margin: 20}}>
-        <Text style={styles.subtitle}>Descrição:</Text>
-        <Text style={styles.txt}>{descricao}</Text>
-      </View>
-
-      <View style={{margin: 20}}>
-        <Text style={styles.subtitle}>Realizar até:</Text>
-        <Text style={styles.txt}>{data}</Text>
-      </View>
-
-      <View
-        style={{
-          alignItems: 'center',
-          marginTop: 20,
-        }}>
-        <Text
-          style={{
-            color: 'black',
-            fontFamily: 'Quicksand-SemiBold',
-            fontSize: 25,
-          }}>
-          Concluido:
-        </Text>
-        <BouncyCheckbox
-          isChecked={check}
-          disableBuiltInState
-          onPress={handleChange}
-          fillColor="black"
-          disableText
-          size={50}
-          style={{marginTop: 10}}
-          iconImageStyle={{height: '50%', width: '50%'}}
-        />
-      </View>
-
-      {changesMade && (
-        <TouchableOpacity style={styles.button}>
+      <ScrollView>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={styles.title}>Tarefa</Text>
           <Icon
-            name="content-save"
+            name="arrow-left-circle"
+            size={40}
+            color={'black'}
+            style={{alignSelf: 'center', position: 'absolute', right: 20}}
+            onPress={() => {
+              nav.goBack();
+            }}></Icon>
+        </View>
+
+        <View style={{margin: 20}}>
+          <Text style={styles.subtitle}>Titulo:</Text>
+          <Text style={styles.txt}>{title}</Text>
+        </View>
+
+        <View style={{margin: 20}}>
+          <Text style={styles.subtitle}>Descrição:</Text>
+          <Text style={styles.txt}>{descricao}</Text>
+        </View>
+
+        <View style={{margin: 20}}>
+          <Text style={styles.subtitle}>Realizar até:</Text>
+          <Text style={styles.txt}>{data}</Text>
+        </View>
+
+        <View
+          style={{
+            alignItems: 'center',
+            marginTop: 20,
+          }}>
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'Quicksand-SemiBold',
+              fontSize: 25,
+            }}>
+            Concluido:
+          </Text>
+          <BouncyCheckbox
+            isChecked={check}
+            disableBuiltInState
+            onPress={handleChange}
+            fillColor="black"
+            disableText
             size={50}
-            color={'white'}
-            onPress={handleSave}></Icon>
-        </TouchableOpacity>
-      )}
+            style={{marginTop: 10}}
+            iconImageStyle={{height: '50%', width: '50%'}}
+          />
+        </View>
+
+        {changesMade && (
+          <TouchableOpacity style={styles.button}>
+            <Icon
+              name="content-save"
+              size={50}
+              color={'white'}
+              onPress={handleSave}></Icon>
+          </TouchableOpacity>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };

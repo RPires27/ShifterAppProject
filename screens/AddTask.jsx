@@ -2,6 +2,7 @@ import {
   Button,
   Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -84,102 +85,104 @@ const AddTask = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flexDirection: 'row'}}>
-        <Text style={styles.title}>Adicionar Tarefa</Text>
-        <Icon
-          name="arrow-left-circle"
-          size={40}
-          color={'black'}
-          style={{alignSelf: 'center', marginLeft: 40}}
-          onPress={() => {
-            nav.goBack();
-          }}></Icon>
-      </View>
-
-      <Text style={styles.subtitle}>Trabalhador/a: {nome}</Text>
-
-      <View style={[styles.descricaoBox, {height: 60}]}>
-        <TextInput
-          value={titulo}
-          onChangeText={settitulo}
-          placeholder="Titulo"
-          style={styles.descricaoTxt}
-          maxLength={20}></TextInput>
-      </View>
-
-      <View style={styles.descricaoBox}>
-        <TextInput
-          value={descricao}
-          onChangeText={setdescricao}
-          placeholder="Descrição"
-          style={styles.descricaoTxt}
-          multiline
-          maxLength={80}></TextInput>
-
-        <Text style={{position: 'absolute', bottom: 2, right: 3}}>
-          {descricao.length}/80
-        </Text>
-      </View>
-
-      <Text style={[styles.subtitle, {marginTop: 20}]}>Realizar até:</Text>
-
-      <View style={{marginTop: 20, flexDirection: 'row'}}>
-        <Text style={styles.subtitle}>Data: </Text>
-
-        <View style={styles.date}>
-          <Text style={styles.date_txt}>{txt_data}</Text>
+      <ScrollView>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={styles.title}>Adicionar Tarefa</Text>
+          <Icon
+            name="arrow-left-circle"
+            size={40}
+            color={'black'}
+            style={{alignSelf: 'center', marginLeft: 40}}
+            onPress={() => {
+              nav.goBack();
+            }}></Icon>
         </View>
 
-        <Icon
-          name="calendar"
-          size={40}
-          color={'black'}
-          style={{alignSelf: 'center'}}
-          onPress={() => ShowMode('date')}></Icon>
-      </View>
+        <Text style={styles.subtitle}>Trabalhador/a: {nome}</Text>
 
-      <View style={{marginTop: 20, flexDirection: 'row'}}>
-        <Text style={styles.subtitle}>Hora: </Text>
-
-        <View style={styles.date}>
-          <Text style={styles.date_txt}>{texto_tempo}</Text>
+        <View style={[styles.descricaoBox, {height: 60}]}>
+          <TextInput
+            value={titulo}
+            onChangeText={settitulo}
+            placeholder="Titulo"
+            style={styles.descricaoTxt}
+            maxLength={20}></TextInput>
         </View>
 
-        <Icon
-          name="clock"
-          size={40}
-          color={'black'}
-          style={{alignSelf: 'center'}}
-          onPress={() => ShowMode('time')}></Icon>
-      </View>
+        <View style={styles.descricaoBox}>
+          <TextInput
+            value={descricao}
+            onChangeText={setdescricao}
+            placeholder="Descrição"
+            style={styles.descricaoTxt}
+            multiline
+            maxLength={80}></TextInput>
 
-      <TouchableOpacity
-        style={{
-          backgroundColor: '#876445',
-          width: 80,
-          height: 80,
-          borderRadius: 50,
-          alignSelf: 'center',
-          top: 100,
-          justifyContent: 'center',
-        }}
-        onPress={AdicionarTask}>
-        <Icon
-          name="plus"
-          size={70}
-          color={'white'}
-          style={{alignSelf: 'center'}}></Icon>
-      </TouchableOpacity>
+          <Text style={{position: 'absolute', bottom: 2, right: 3}}>
+            {descricao.length}/80
+          </Text>
+        </View>
 
-      {shown && (
-        <DateTimePicker
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-          minimumDate={new Date()}></DateTimePicker>
-      )}
+        <Text style={[styles.subtitle, {marginTop: 20}]}>Realizar até:</Text>
+
+        <View style={{marginTop: 20, flexDirection: 'row'}}>
+          <Text style={styles.subtitle}>Data: </Text>
+
+          <View style={styles.date}>
+            <Text style={styles.date_txt}>{txt_data}</Text>
+          </View>
+
+          <Icon
+            name="calendar"
+            size={40}
+            color={'black'}
+            style={{alignSelf: 'center'}}
+            onPress={() => ShowMode('date')}></Icon>
+        </View>
+
+        <View style={{marginTop: 20, flexDirection: 'row'}}>
+          <Text style={styles.subtitle}>Hora: </Text>
+
+          <View style={styles.date}>
+            <Text style={styles.date_txt}>{texto_tempo}</Text>
+          </View>
+
+          <Icon
+            name="clock"
+            size={40}
+            color={'black'}
+            style={{alignSelf: 'center'}}
+            onPress={() => ShowMode('time')}></Icon>
+        </View>
+
+        <TouchableOpacity
+          style={{
+            backgroundColor: '#876445',
+            width: 80,
+            height: 80,
+            borderRadius: 50,
+            alignSelf: 'center',
+            marginTop: 40,
+            justifyContent: 'center',
+          }}
+          onPress={AdicionarTask}>
+          <Icon
+            name="plus"
+            size={70}
+            color={'white'}
+            style={{alignSelf: 'center'}}></Icon>
+        </TouchableOpacity>
+
+        {shown && (
+          <DateTimePicker
+            value={date}
+            mode={mode}
+            is24Hour={true}
+            display="default"
+            onChange={onChange}
+            minimumDate={new Date()}></DateTimePicker>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };

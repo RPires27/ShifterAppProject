@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   SafeAreaView,
   ScrollView,
@@ -23,6 +24,32 @@ const TaskDetails = ({route}) => {
   const handleChange = () => {
     setChangesMade(true);
     setcheck(!check);
+  };
+
+  const showAlert = () => {
+    Alert.alert(
+      'Eliminar Tarefa',
+      'Tem a certeza que pretende eliminar a tarefa?',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'Eliminar', onPress: () => deleteTask()},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const deleteTask = () => {
+    firestore()
+      .collection('users')
+      .doc(id)
+      .collection('tasks')
+      .doc(title)
+      .delete()
+      .then(nav.navigate('Home'));
   };
 
   const handleSave = () => {
@@ -69,27 +96,40 @@ const TaskDetails = ({route}) => {
 
         <View
           style={{
+            margin: 20,
+
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: 20,
           }}>
-          <Text
-            style={{
-              color: 'black',
-              fontFamily: 'Quicksand-SemiBold',
-              fontSize: 25,
-            }}>
-            Concluido:
-          </Text>
-          <BouncyCheckbox
-            isChecked={check}
-            disableBuiltInState
-            onPress={handleChange}
-            fillColor="black"
-            disableText
-            size={50}
-            style={{marginTop: 10}}
-            iconImageStyle={{height: '50%', width: '50%'}}
-          />
+          <View>
+            <Text
+              style={{
+                color: 'black',
+                fontFamily: 'Quicksand-SemiBold',
+                fontSize: 25,
+              }}>
+              Concluido:
+            </Text>
+            <BouncyCheckbox
+              isChecked={check}
+              disableBuiltInState
+              onPress={handleChange}
+              fillColor="black"
+              disableText
+              size={50}
+              style={{marginTop: 10, alignSelf: 'center'}}
+              iconImageStyle={{height: '50%', width: '50%'}}
+            />
+          </View>
+          <Icon
+            name="delete"
+            size={40}
+            color={'black'}
+            onPress={() => {
+              showAlert();
+            }}
+            style={{marginRight: 20}}></Icon>
         </View>
 
         {changesMade && (

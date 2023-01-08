@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {clearUser} from '../reducers/userSlice';
+import {clearUsers} from '../reducers/usersListSlice';
 
 const Settings = () => {
   const nav = useNavigation();
@@ -18,7 +19,10 @@ const Settings = () => {
   const SignOut = () => {
     auth()
       .signOut()
-      .then(() => dispatch(clearUser()));
+      .then(() => {
+        dispatch(clearUser());
+        dispatch(clearUsers());
+      });
   };
   return (
     <SafeAreaView style={styles.container}>
